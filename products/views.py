@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import Product
-from .serializers import ProductSerializer
+from .models import Product, Favorite
+from .serializers import ProductSerializer, FavoriteSerializer
 
 
 class ProductAPIView(generics.ListCreateAPIView):
@@ -11,3 +11,8 @@ class ProductAPIView(generics.ListCreateAPIView):
 class ProductRetrieveAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+class FavoriteAPIView(generics.ListCreateAPIView):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
+    permission_classes = []

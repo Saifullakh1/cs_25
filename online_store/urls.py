@@ -22,7 +22,8 @@ from django.conf.urls.static import static
 api_urlpatterns = [
     path('', include('products.urls')),
     path('carts/', include('carts.urls')),
-    path('', include('accounts.urls'))
+    path('', include('accounts.urls')),
+    path('categories/', include('categories.urls'))
 ]
 
 urlpatterns = [
