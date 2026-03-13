@@ -1,11 +1,13 @@
 from rest_framework import serializers
 from .models import Product, Favorite
-
+from reviews.serializers import ReviewForProductSerializer
 
 class ProductSerializer(serializers.ModelSerializer):
+    product_reviews = ReviewForProductSerializer(many=True)
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ("id", "title", "image", "price", "currency", "product_reviews")
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
