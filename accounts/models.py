@@ -1,27 +1,47 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, username, password):
+        if password is None:
+            raise TypeError("Superusers must have a password.")
+
+        user = self.model(username=username)
+        user.set_password(password)
+        user.save
+
+        return user
+
+    def create_superuser(self, username, password):
+        if password is None:
+            raise TypeError("Superusers must have a password.")
+
+        user = self.create_user(username=username, password=password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+        return user
 
 
 class GenderChoice(models.Choices):
     male = 'male'
     female = 'female'
 
-class Account(models.Model):
+
+class Account(AbstractUser):
     name = models.CharField(max_length=50, verbose_name="Имя")
     age = models.IntegerField(default=0, verbose_name="Возраст")
     phone = models.CharField(max_length=50, blank=True, verbose_name="Номер телефона")
-    email = models.EmailField(max_length=255, unique=True, verbose_name="Почта")
-    password = models.CharField(max_length=50, verbose_name="Пароль")
     gender = models.CharField(max_length=10, choices=GenderChoice.choices, verbose_name="Гендер")
     avatar = models.FileField(upload_to="avatar", verbose_name="Аватар")
+    objects = UserManager()
+
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.name
-    
-    def save(self, *args, **kwargs):
-        if self.password:
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
     
     class Meta:
         verbose_name = 'Аккаунт'
